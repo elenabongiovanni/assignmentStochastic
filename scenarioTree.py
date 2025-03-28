@@ -1,208 +1,137 @@
 # -*- coding: utf-8 -*-
+import os
+import time
 import logging
 import numpy as np
-import gurobipy as gp
-from gurobipy import GRB
-from scipy import optimize
-from assets import MultiStock
-from .stochModel import StochModel
-from .checkarbitrage import check_arbitrage_prices, make_arbitrage_free_states
-from .calculatemoments import mean, second_moment, correlation
+import networkx as nx
+import matplotlib.pyplot as plt
+from stochModel import StochModel
+ 
 
-class BrownianMotionForHedging(StochModel):
-    ''' 
-    Stochastic model used to simulate stock price dynamics 
-    under the Geometric Brownian Motion model. The moment matching 
-    optimization problem used to find children nodes probabilities 
-    is solved with Sequential Least Squares Quadratic Programming. 
-    The matched properties are: first and second moment, correlation.
-    Options are then priced via Black&Scholes formula.
-    '''
+class ScenarioTree(nx.DiGraph):
+    def __init__(self, name: str, branching_factors: list, len_vector: int, initial_value, stoch_model: StochModel):
+        nx.DiGraph.__init__(self)
+        starttimer = time.time()
+        self.starting_node = 0
+        self.len_vector = len_vector # number of stochastic variables
+        self.stoch_model = stoch_model # stochastic model used to generate the tree
+        depth = len(branching_factors) # tree depth
+        self.add_node( # add the node 0  
+            self.starting_node,
+            obs=initial_value,
+            prob=1,
+            id=0,
+            stage=0,
+            remaining_times=depth,
+            path_prob=1 # path probability from the root node to the current node
+        )    
+        self.name = name
+        self.filtration = []
+        self.branching_factors = branching_factors
+        self.n_scenarios = np.prod(self.branching_factors)
+        self.nodes_time = []
+        self.nodes_time.append([self.starting_node])
 
-    def __init__(self, 
-                 tickers, 
-                 option_list, 
-                 dt, r, mu, 
-                 sigma, rho, 
-                 skew, kur, 
-                 rnd_state): 
-        
-        self.n_shares = len(tickers)
-        self.dt = dt 
-        self.n_options = len(option_list)
-        self.option_list = option_list
-        self.risk_free_rate = r
-        self.mu = mu
-        self.sigma = sigma
-        self.corr = rho 
-        self.skew = skew
-        self.kur = kur
-        self.rnd_state = rnd_state
-
-
-    def simulate_one_time_step(self, n_children, parent_node): 
-        '''
-        It generates children nodes by computing new asset values and 
-        the probabilities of each new node. Stock prices following 
-        Geometric Brownian Motion are generated until a no arbitrage 
-        setting is found. If the market is arbitrage free, option prices 
-        (using Black and Scholes formula) and cash new values are computed.
-        '''
-
-        remaining_times = parent_node['remaining_times']-1 # remaining times of children nodes
-        parent_stock_prices = parent_node['obs'][1:self.n_shares+1] 
-        parent_cash_price = parent_node['obs'][0]
-
-        '''arb = True 
-        counter = 0 
-        # Simulate stock prices until no-arbitarge is found:
-        while (arb == True) and (counter<100):
-            counter += 1
-            # In simulations settings (Geometric Brownian Motion): 
-            # S(t+dt) = S(t) * exp((mu - 1/2*sigma**2) * dt + sigma * sqrt(dt) * Z)
-            # where Z is a standard normal distribution
+        # Build the tree
+        count = 1
+        last_added_nodes = [self.starting_node]
+        # Main loop: until the time horizon is reached
+        for i in range(depth):
+            next_level = []
+            self.nodes_time.append([])
+            self.filtration.append([])
             
-            # Generate correlated Brownian increments
-            Increment = MultiStock.generate_BM_stock_increments(
-                self.n_shares, 
-                self.risk_free_rate,
-                self.mu, self.sigma, self.corr, 
-                self.dt, n_children,
-                self.rnd_state,
-                risk_free = False)
-            
-            # Find new stock prices using the Geometric Brownian Motion formula
-            stock_prices = np.zeros((self.n_shares, n_children))
-            for i in range(self.n_shares):
-                for s in range(n_children):
-                    stock_prices[i,s] = parent_stock_prices[i] * np.exp(Increment[i,s]) 
+            # For each node of the last generated period add its children through the StochModel class
+            for parent_node in last_added_nodes:
+                # Probabilities and observations are given by the stochastic model chosen
+                p, x = self._generate_one_time_step(self.branching_factors[i], self._node[parent_node])
+                # Add all the generated nodes to the tree
+                for j in range(self.branching_factors[i]):
+                    id_new_node = count
+                    self.add_node(
+                        id_new_node,
+                        obs=x[:,j],
+                        prob=p[j],
+                        id=count,
+                        stage=i+1,
+                        remaining_times=depth-1-i,
+                        path_prob=p[j]*self._node[parent_node]['path_prob'] # path probability from the root node to the current node
+                    )
+                    self.add_edge(parent_node, id_new_node)
+                    next_level.append(id_new_node)
+                    self.nodes_time[-1].append(id_new_node)
+                    count += 1
+            last_added_nodes = next_level
+            self.n_nodes = count
+        self.leaves = last_added_nodes
 
-            arb = check_arbitrage_prices(stock_prices, parent_stock_prices, self.risk_free_rate, self.dt)
-            if (arb == False):
-                logging.info(f"No arbitrage solution found after {counter} iteration(s)")
-            
-        if counter >= 100:
-            raise RuntimeError(f"No arbitrage solution NOT found after {counter} iteration(s)")
-        else:
-            probs = self.compute_probabilities(n_children, parent_stock_prices, stock_prices)'''
-        
-        # In simulations settings (Geometric Brownian Motion): 
-        # S(t+dt) = S(t) * exp((mu - 1/2*sigma**2) * dt + sigma * sqrt(dt) * Z)
-        # where Z is a standard normal distribution
-        
-        # Generate correlated Brownian increments
-        Increment = MultiStock.generate_BM_stock_increments(
-            self.n_shares, 
-            self.risk_free_rate,
-            self.mu, self.sigma, self.corr, 
-            self.dt, n_children,
-            self.rnd_state,
-            risk_free = False)
-        
-        # Find new stock prices using the Geometric Brownian Motion formula
-        stock_prices = np.zeros((self.n_shares, n_children))
-        for i in range(self.n_shares):
-            for s in range(n_children):
-                stock_prices[i,s] = parent_stock_prices[i] * np.exp(Increment[i,s]) 
-        
-        stock_prices = make_arbitrage_free_states(parent_stock_prices, stock_prices, n_children)
-        probs = self.compute_probabilities(n_children, parent_stock_prices, stock_prices)
-
-        # Options values 
-        option_prices = np.zeros((self.n_options, n_children))
-        time_to_maturity = remaining_times * self.dt 
-        if time_to_maturity != 0:
-            for j, option in enumerate(self.option_list):
-                underlying_value = stock_prices[option.underlying_index,:]
-                option_prices[j,:] = option.BlackScholesPrice(underlying_value, time_to_maturity)
-        else: 
-            for j, option in enumerate(self.option_list):
-                underlying_value = stock_prices[option.underlying_index,:]
-                option_prices[j,:] = option.get_payoff(underlying_value)
-
-        # Cash value
-        cash_price = parent_cash_price * np.exp(self.risk_free_rate*self.dt) * np.ones(shape=n_children)
-
-        prices = np.vstack((cash_price, stock_prices, option_prices))
-        
-        return probs, prices
+        endtimer = time.time()
+        logging.info(f"Computational time to generate the entire tree:{endtimer-starttimer} seconds")
     
-    
-    def _MM_objective(self, p, *args): 
-        '''Objective function of the Moment Matching model. p is the 
-        vector of decision variables (node probabilities).'''
-        
-        parent_stock_prices, stock_prices, n_children = args 
-        # Get returns from prices:
-        returns = np.zeros((len(parent_stock_prices), n_children))
-        for i in range(len(parent_stock_prices)):
-            returns[i, :] = np.log(stock_prices[i, :] / parent_stock_prices[i])
-
-        # Statistical moments of the tree
-        tree_mean = mean(returns, p) 
-        tree_moment2 = second_moment(returns, p) 
-        tree_cor = correlation(returns, p)
-
-        # Geometric Brownian Motion moments
-        true_moment1 = np.zeros(self.n_shares)
-        true_moment2 = np.zeros(self.n_shares)
-        for j in range(self.n_shares):
-            true_moment1[j] = self.moments(dynamics='BS', number=1, underlying_index=j)
-            true_moment2[j] = self.moments(dynamics='BS', number=2, underlying_index=j)
-
-        # The objective function is the sum the norms of the difference between each expected moment
-        # and the moment of the generated tree
-        sqdiff = (np.linalg.norm(true_moment1 - tree_mean, 2) + 
-                  np.linalg.norm(true_moment2 - tree_moment2, 2) + 
-                  np.linalg.norm(self.corr - tree_cor, 1))
-        
-        return sqdiff
-    
-
-    def _MM_constraint(self, p):
-        '''Probs sum up to one.'''
-
-        return np.sum(p) - 1
-
-
-    def compute_probabilities(self, n_children, parent_stock_prices, stock_prices):
-        '''
-        Compute probabilities associated to children nodes via moment matching.
-        '''
-
-        # Define initial solution: uniform nodes probabilities
-        p_init = (1 / n_children) * np.ones(n_children)
+    # Method to plot the tree
+    def plot(self, file_path=None):
+        _, ax = plt.subplots(figsize=(20, 12))
+        x = np.zeros(self.n_nodes)
+        y = np.zeros(self.n_nodes)
+        x_spacing = 15
+        y_spacing = 200000
+        for time in self.nodes_time:
+            for node in time:
+                obs_str = ', '.join([f"{ele:.2f}" for ele in self.nodes[node]['obs']])
+                ax.text(
+                    x[node], y[node], f"[{obs_str}]", 
+                    ha='center', va='center', bbox=dict(
+                        facecolor='white',
+                        edgecolor='black'
+                    )
+                )
+                children = [child for parent, child in self.edges if parent == node]
+                if len(children) % 2 == 0:
+                    iter = 1
+                    for child in children:
+                        x[child] = x[node] + x_spacing
+                        y[child] = y[node] + y_spacing * (0.5 * len(children) - iter) + 0.5 * y_spacing
+                        ax.plot([x[node], x[child]], [y[node], y[child]], '-k')
+                        prob = self.nodes[child]['prob']
+                        ax.text(
+                            (x[node] + x[child]) / 2, (y[node] + y[child]) / 2,
+                            f"prob={prob:.2f}",
+                            ha='center', va='center',
+                            bbox=dict(facecolor='yellow', edgecolor='black')
+                        )                        
+                        iter += 1
                 
-        # Define probabilities bounds
-        bounds = [(1/(n_children*10), 1)] * (n_children) 
-        
-        # Define constraints
-        constraints = [{'type': 'eq', 'fun': self._MM_constraint}]
+                else:
+                    iter = 0
+                    for child in children:
+                        x[child] = x[node] + x_spacing
+                        y[child] = y[node] + y_spacing * ((len(children)//2) - iter)
+                        ax.plot([x[node], x[child]], [y[node], y[child]], '-k')
+                        prob = self.nodes[child]['prob']
+                        ax.text(
+                            (x[node] + x[child]) / 2, (y[node] + y[child]) / 2,
+                            f"prob={prob:.2f}",
+                            ha='center', va='center',
+                        bbox=dict(facecolor='yellow', edgecolor='black')
+                        )                        
+                        iter += 1
+            y_spacing = y_spacing * 0.25
 
-        args = (parent_stock_prices, stock_prices, n_children)
+        #plt.title(self.name)
+        plt.axis('off')
+        if file_path:
+            plt.savefig(file_path)
+            plt.close()
+        else:
+            plt.show()
 
-        # Run optimization
-        res = optimize.minimize(self._MM_objective, p_init, method='SLSQP', bounds=bounds, args=args, constraints=constraints, options={'maxiter': 5000})
-        
-        # Store the solution
-        probabilities = res.x
-        
-        return probabilities
-    
-    
-    def moments(self, dynamics: str, number: int, underlying_index: int):
-        '''
-        Get the exact moment (number=1,2,...) of the specified dynamics (e.g., BS, VG).
-        '''
-        j = underlying_index
 
-        if dynamics == 'BS':
-            if number == 1: moment = (self.mu[j] - 1/2 * self.sigma[j]**2) * self.dt
-            if number == 2: moment = self.sigma[j]**2 * self.dt + (self.mu[j] * self.dt)**2
-        
-        if dynamics == 'VG': 
-            if number == 1: moment = self.mu[j] * self.dt
-            if number == 2: moment = (self.sigma[j]**2 + self.mu[j]**2 * self.nu[j]) * self.dt + (self.mu[j] * self.dt)**2
-        
-        return moment
+    def _generate_one_time_step(self, n_scenarios, parent_node): 
+        '''Given a parent node and the number of children to generate, it returns the 
+        children with corresponding probabilities'''
+        prob, obs = self.stoch_model.simulate_one_time_step(
+            parent_node=parent_node,
+            n_children=n_scenarios
+        )
+        return prob, obs
     
