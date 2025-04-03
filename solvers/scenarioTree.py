@@ -5,7 +5,7 @@ import logging
 import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
-from stochModel import StochModel
+from solvers.stochModel import StochModel
  
 
 class ScenarioTree(nx.DiGraph):
