@@ -14,7 +14,7 @@ price = 10
 cost = 3
 
 # Parametri di esempio
-branching_factors = [3, 3]  # 3 scenari al primo stadio, 3 al secondo
+branching_factors = [3]  # 1 scenario al primo stadio, 3 al secondo stadio
 stoch_model = StochModel(1)
 print(stoch_model.expected)
 initial_value = [stoch_model.expected]  # valore iniziale della decisione (es. giornali acquistati)

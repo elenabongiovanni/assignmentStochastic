@@ -15,13 +15,11 @@ def newsVendor(demand, prob, selling_price, cost):
         s = Scenario(demand[i], prob[i])
         scenarios.append(s)
 
-
     # Model
     m = gp.Model("newsvendor")
 
     n_neswpaper = m.addVar(vtype=GRB.INTEGER, lb=0, name="X") #number of bought newspaper
     y = m.addVars(n_scenarios, vtype=GRB.INTEGER, lb=0, name="Y") #numeber of sold newspaper
-
 
     exp_val = sum(prob[i] * y[i] for i in range(n_scenarios)) 
     m.setObjective(
