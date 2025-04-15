@@ -1,3 +1,4 @@
+
 # Calcola la matrice delle distanze euclidee
 distanze = cdist(scenari, scenari, metric='euclidean')
 

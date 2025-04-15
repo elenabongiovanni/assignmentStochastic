@@ -11,6 +11,9 @@ def plantLocation(demand, prob, transportation_cost, fixed_cost):
     capacity_level = np.ones(n_demand_nodes)
     n_scenarios = 4
     penalty_coefficient = 3*np.ones(n_demand_nodes)
+    exp_val = 0
+    exp_penalty_val = 0
+
     scenarios = []
     for i in range(n_scenarios):
         s = Scenario(demand[i], prob[i])
@@ -35,16 +38,18 @@ def plantLocation(demand, prob, transportation_cost, fixed_cost):
     )
 
     # Constraints
+    # the constraints on x and z are automatically included using grb.continuos or grb.binary 
+    # CONTROLLA DOMNETAZIONE GUROBI!!
     for s in range(n_scenarios):
         for j in range(n_demand_nodes):
-            sum( x[i,j,s] for i in range(n_production_nodes) ) + z[j,s] == demand[j,s]
+            m.addConstr(sum( x[i,j,s] for i in range(n_production_nodes) ) + z[j,s] == demand[j,s])
 
         for i in range(n_production_nodes):
-            sum( x[i,j,s] for j in range(n_demand_nodes) ) <= capacity_level[i]*y[i]
+            m.addConstr(sum( x[i,j,s] for j in range(n_demand_nodes) ) <= capacity_level[i]*y[i])
 
     # Solve
     m.optimize()
-    ottimo = y.Y
+    ottimo = [y[i].X for i in range(n_production_nodes)]
 
     print(ottimo)
     print(m.ObjVal)

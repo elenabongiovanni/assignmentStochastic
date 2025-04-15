@@ -10,16 +10,20 @@ def assembleToOrder(demand, prob, selling_price, cost):
     # Data set initialization
     # CAMBIARE !!!!!!
     n_components = 5
-    n_items = 2
-    n_machines = 2
-    n_scenarios = len(demand)
-    g = ones(n_components, n_items)
-    t = ones(n_components, n_machines)
-    l = ones(n_machines)
+    n_items = 3
+    n_machines = 3
+    n_scenarios = 3
+    exp_val=0
+    #g = ones(n_components, n_items)
+    g = np.array([[1, 1, 1], [1,1,1], [1,0,0], [0,1,0], [0,0,1]])
+    #t = ones(n_components, n_machines)
+    t = np.array([[1,2,1],[1,2,2],[2,2,0],[1,2,0],[3,2,0]])
+    #l = ones(n_machines)
+    l=np.array([[800,700,600]])
 
     scenarios = []
     for i in range(n_scenarios):
-        s = Scenario(demand[i], prob[i])
+        s = Scenario(demand[:,i], prob[i])
         scenarios.append(s)
 
     # Model
@@ -45,19 +49,19 @@ def assembleToOrder(demand, prob, selling_price, cost):
             )
         for i in range(n_components):
             m.addConstr(
-                sum( g[i,j]*y[j,s] for j in range(n_item)) <= x[i] # Capacity items production
+                sum( g[i,j]*y[j,s] for j in range(n_items)) <= x[i] # Capacity items production
             )
     for k in range(n_machines):
         m.addConstr(
-            sum( t[i,k] * x[i] for i in range(n_components)) <= l[k] # Capacity production on machines
+            sum( x[i]*t[i,k] for i in range(n_components)) <= l[k] # Capacity production on machines
         )
 
     # Solve
     m.optimize()
-    ottimo = x.X
+    ottimo = [x[i].X for i in range(n_components)]
     print(ottimo)
 
-    print(f"Quantity of each component: {x.X}")
+    print(f"Quantity of each component: {ottimo}")
     print(m.ObjVal)
 
     return ottimo, m.ObjVal
