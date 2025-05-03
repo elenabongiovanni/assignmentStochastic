@@ -10,6 +10,7 @@ import solvers.scenarioTree as scenarioTree
 import plantLocation
 import newsVendor
 import assembleToOrder
+import wasserstainDistance
 
 demand = generation.generate_random_demand(50, 0, 20)
 prob = generation.generate_random_prob(50)
@@ -49,11 +50,15 @@ salling_price2=np.array([80,70,90])
 prob2= np.array([1/3,1/3,1/3])
 ottimo2, val2 = assembleToOrder.assembleToOrder(domanda2, prob2, salling_price2, costi2)
 
-"""
+domanda3 = [0,1,2,3]
+prob3 = [0.4, 0.3, 0.2, 0.1]
+selling_price3 = 10
+cost3 = 2
+ottimo3, val3 = newsVendor.newsVendor(domanda3, prob3, selling_price3, cost3)
+
 # Parametri di esempio
-branching_factors = [3]  # 1 scenario al primo stadio, 3 al secondo stadio
-stoch_model = StochModel(1)
-print(stoch_model.expected)
+branching_factors = [5]  
+stoch_model = StochModel(3)
 initial_value = [stoch_model.expected]  # valore iniziale della decisione (es. giornali acquistati)
 
 # Crea l'albero degli scenari
@@ -61,7 +66,9 @@ tree = ScenarioTree(name="alberello",branching_factors=branching_factors, len_ve
 
 # Plotta l'albero
 tree.plot()
-#chiamo clustering
 
-#chiamo newsvendor
-"""
+# Salvo gli scenari
+scenari = tree.get_all_scenarios()
+best_subset, scenari[best_subset], best_distance = wasserstainDistance.reduce_scenarios_wasserstein(scenari, 3, p=2)
+print(best_subset)
+print(scenari[best_subset])

@@ -19,7 +19,7 @@ def assembleToOrder(demand, prob, selling_price, cost):
     #t = ones(n_components, n_machines)
     t = np.array([[1,2,1],[1,2,2],[2,2,0],[1,2,0],[3,2,0]])
     #l = ones(n_machines)
-    l=np.array([[800,700,600]])
+    l=np.array([800,700,600])
 
     scenarios = []
     for i in range(n_scenarios):

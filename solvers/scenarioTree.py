@@ -141,6 +141,26 @@ class ScenarioTree(nx.DiGraph):
         obs_node2 = self.nodes[id2]['obs']
         return np.linalg.norm(obs_node1-obs_node2)
     
+    def get_all_scenarios(self):
+        all_scenarios = []
+        skipped_first = False  # Flag per saltare il primo scenario
+
+        for node in self.nodes():
+            if 'obs' in self.nodes[node]:
+                if not skipped_first:
+                    skipped_first = True
+                    continue  # Salta il primo scenario
+                print(f"Scenario for node {node}: {self.nodes[node]['obs']}")
+                all_scenarios.append(self.nodes[node]['obs']) 
+
+        # Verifica che tutti gli scenari abbiano la stessa lunghezza
+        scenario_lengths = [len(scenario) for scenario in all_scenarios]
+        
+        if len(set(scenario_lengths)) > 1:
+            raise ValueError("Gli scenari hanno lunghezze diverse, non possono essere memorizzati in un array NumPy.")
+        
+        return np.array(all_scenarios)
+    
 
     
 

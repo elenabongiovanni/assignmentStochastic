@@ -1,0 +1,17 @@
+sistemare id scenari dopo aver rimosso il nodo di partenza perche sono scalati
+
+rifare generazione scenari con moment matching
+
+clustering con altro tipo di distanza
+
+controllare clustering con distanza wasserstein quando ci sono tanti scenari
+
+chiedere agli altri con newvendor che hanno fatto
+
+generalizzare le medie nel caso di dimensione superiore in stochmodel (capire come lavorare con obs che è un vettore e a noi veniva matrice)
+
+testare efficienza
+
+controllare commenti iniziali ATO
+
+fare pulizia file superflui o comunque ordinare generation, clustering ecc

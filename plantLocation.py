@@ -38,8 +38,6 @@ def plantLocation(demand, prob, transportation_cost, fixed_cost):
     )
 
     # Constraints
-    # the constraints on x and z are automatically included using grb.continuos or grb.binary 
-    # CONTROLLA DOMNETAZIONE GUROBI!!
     for s in range(n_scenarios):
         for j in range(n_demand_nodes):
             m.addConstr(sum( x[i,j,s] for i in range(n_production_nodes) ) + z[j,s] == demand[j,s])

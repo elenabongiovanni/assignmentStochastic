@@ -3,11 +3,6 @@ from gurobipy import GRB
 from instances import *
 from data import *
 
-"""cost = 2
-selling_price = 10 
-prob = [0.4, 0.3, 0.2, 0.1]
-demand = [0,1,2,3]"""
-
 def newsVendor(demand, prob, selling_price, cost):
     n_scenarios = len(demand)
     scenarios = []
@@ -49,8 +44,5 @@ def newsVendor(demand, prob, selling_price, cost):
         obj_value_s = selling_price * min(ottimo,demand[i]) - cost * ottimo
         scenarios[i].add_gain(obj_value_s)
         print(f"Scenario {i}: Valore della funzione obiettivo = {obj_value_s}")"""
-
-    print(f"n_neswpaper: {n_neswpaper.X}")
-    print(m.ObjVal)
 
     return ottimo, m.ObjVal
