@@ -3,31 +3,24 @@ from gurobipy import GRB
 from instances import *
 from data import *
 
-def assembleToOrder(demand, prob, selling_price, cost):
+def assembleToOrder(demand, prob, parameters):
+ 
+    exp_val = 0
+    n_scenarios = len(demand)
+    n_components = parameters.get('n_components')
+    n_items = parameters.get('n_items')
+    cost = parameters.get('costs')
+    selling_price = parameters.get('selling_prices')
+    n_machines = parameters.get('n_machines')
+    l = parameters.get('machine_capacities')
+    g = parameters.get('gozinto_factor')
+    t = parameters.get('time_required')
 
-    # settare domanda e probabilità !!!!!!!!!!!!!
-
-    # Data set initialization
-    # CAMBIARE !!!!!!
-    n_components = 5
-    n_items = 3
-    n_machines = 3
-    n_scenarios = 3
-    exp_val=0
-    #g = ones(n_components, n_items)
-    g = np.array([[1, 1, 1], [1,1,1], [1,0,0], [0,1,0], [0,0,1]])
-    #t = ones(n_components, n_machines)
-    t = np.array([[1,2,1],[1,2,2],[2,2,0],[1,2,0],[3,2,0]])
-    #l = ones(n_machines)
-    l=np.array([800,700,600])
-
-    scenarios = []
-    for i in range(n_scenarios):
-        s = Scenario(demand[:,i], prob[i])
-        scenarios.append(s)
+    scenarios = demand
 
     # Model
     m = gp.Model("assembleToOrder")
+    m.setParam('OutputFlag', 0)
 
     x = m.addVars(n_components, vtype=GRB.INTEGER, lb=0, name="X") #quantity of each component
     y = m.addVars(n_items, n_scenarios, vtype=GRB.INTEGER, lb=0, name="Y") #quantity of each item

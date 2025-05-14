@@ -1,17 +1,13 @@
-# -*- coding: utf-8 -*-
 from abc import abstractmethod
 import numpy as np
-#from data import Generation
 
 class StochModel():
 
     @abstractmethod
-    def __init__(self, num_variables, seed):
+    def __init__(self, num_variables, setting): 
         self.num_variables = num_variables  # Numero di variabili per scenario (ad esempio, numero di prodotti)
-        self.expected = 0
-        self.seed = seed
-        
-        #self.devstd
+        self.expected = setting.get('expectedValue')
+        self.devstd = setting.get('devstd')
 
     
     @abstractmethod
@@ -31,42 +27,13 @@ class StochModel():
         - obs: Matrice di osservazioni, una riga per variabile, ogni colonna per scenario
         """
 
-        a = np.random.rand(self.num_variables)*10 + 1
-        c = np.random.rand(self.num_variables)*10 + 1
-        m = np.random.rand(self.num_variables)*10 + 1 
         # Simulazione delle probabilità (uniformi o distribuite secondo un altro criterio)
         prob = 1/n_children*np.ones(n_children)
         
         # Simulazione delle osservazioni: matrice con num_variables righe e n_children colonne
         # Ogni colonna rappresenta una variabile stocastica per scenario
-        
-        obs = np.zeros((self.num_variables, n_children))
-        obs[:,0] = self.seed
+        obs = np.random.normal(self.expected, self.devstd, [self.num_variables, n_children]) 
+        obs = np.abs(obs)   # Per evitare valori negativi (puoi rimuoverlo se non necessario)
+        # self.expected = sum(prob[i] * obs[:,i] for i in range(n_children)) 
 
-        for j in range(1,n_children):
-            for i in range(self.num_variables):
-                obs[i,j]  = (a[i]*obs[i-1,j] + c[i])%m[i]
-
-        self.expected = np.mean(obs, axis=1)
-        
-        #obs = np.random.normal(self.expected, self.devstd, [self.num_variables, n_children]) 
-        #obs = np.abs(obs)   # Per evitare valori negativi (puoi rimuoverlo se non necessario)
-        #self.expected = sum(prob[i] * obs[:,i] for i in range(n_children)) 
         return prob, obs   
-        
-
-
-        """
-        obs = np.ones((self.num_variables, n_children))
-        for j in range(len(self.expected)):
-            for k in range(n_children):
-                obs[j,k] = np.random.normal(self.expected[j], self.devstd) 
-                obs[j,k] = np.abs(obs[j,k])   # Per evitare valori negativi (puoi rimuoverlo se non necessario)
-            self.expected[j] = sum(prob[i] * obs[j,i] for i in range(n_children)) 
-        print(obs)
-        return prob, obs
-        """
-
-        # parent_node is the node that the generate the two-stage subtree that
-        # we are going to build and add to the general scenario tree
-        #pass

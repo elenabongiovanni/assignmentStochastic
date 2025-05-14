@@ -3,11 +3,6 @@ import gurobipy as gp
 from gurobipy import GRB
 import itertools
 
-""" 
-La riduzione degli scenari attraverso la distanza di Wasserstein ridistribuisce la probabilità (flusso tra i nodi, ovvero gli scenari)
-tra gli scenari contenuti nel sottoinsieme selezionato (attraverso un problema di ottimizzazione)
-"""
-
 def compute_cost_matrix_multivariate(points_mu, points_nu, p=2):
     """
     Calcola la matrice dei costi tra punti multivariati usando la norma p.
@@ -38,14 +33,12 @@ def compute_cost_matrix_multivariate(points_mu, points_nu, p=2):
 
     cost_matrix = np.zeros((m, n))
 
-    "Calcolo la matrice dei costi = distanza euclidea tra il vettore x e y"
     for i in range(m):
         for j in range(n):
-            diff = points_mu[i] - points_nu[j]
+            diff = np.abs(points_mu[i] - points_nu[j])
             cost_matrix[i, j] = np.linalg.norm(diff, ord=p)
 
     return cost_matrix
-
 
 def wasserstein_distance(mu, nu, cost_matrix):
     """
@@ -78,7 +71,6 @@ def wasserstein_distance(mu, nu, cost_matrix):
     model.setParam("OutputFlag", 0)
 
     # Decision variables: transport plan gamma_ij
-    """gamma rappresenta la quantità di massa di probabilità trasportata da x_i a y_j"""
     gamma = model.addVars(m, n, lb=0, ub=GRB.INFINITY, name="gamma")
 
     # Objective: minimize the sum of the transport costs
@@ -105,44 +97,26 @@ def wasserstein_distance(mu, nu, cost_matrix):
         return wasserstein_distance, transport_plan
     else:
         raise Exception("Optimization problem did not converge!")
-
-
-# riduce gli scenari basandosi sulla distanza di wasserstain
-# seleziona random uno scenario e poi a partire da questo, controlla i vicini
-def reduce_scenarios_nearest_neighbors(scenarios, num_reduce, p=2):
+    
+def reduce_scenarios_wasserstein(scenarios, num_reduce, p=2):
     """
-    Riduce il numero di scenari scegliendo i vicini più prossimi.
+    Riduce il numero di scenari multivariati usando la distanza di Wasserstein.
     """
     scenarios = np.array(scenarios)
     n = len(scenarios)
-    mu = np.ones(n) / n  # probabilità originali
+    mu = np.ones(n) / n  # probabilità uniformi
 
-    # Seleziona un primo scenario a caso
-    selected_indices = [np.random.choice(n)]
-    remaining_indices = list(set(range(n)) - set(selected_indices))
-    
-    # Continua a selezionare vicini più prossimi
-    for _ in range(1, num_reduce):
-        min_distance = float('inf')
-        best_index = None
+    combinations = list(itertools.combinations(range(n), num_reduce))
+    best_distance = float("inf")
+    best_subset = None
 
-        for idx in remaining_indices:
-            # Calcola la matrice dei costi per il candidato
-            reduced = scenarios[selected_indices + [idx]]
-            nu = np.ones(len(reduced)) / len(reduced)
-            cost = compute_cost_matrix_multivariate(scenarios, reduced, p=p)
-            
-            # Calcola la distanza di Wasserstein
-            dist, _ = wasserstein_distance(mu, nu, cost)
-            
-            # Se il candidato è migliore, selezionalo
-            if dist < min_distance:
-                min_distance = dist
-                best_index = idx
+    for comb in combinations:
+        reduced = scenarios[list(comb)]
+        nu = np.ones(num_reduce) / num_reduce
+        cost = compute_cost_matrix_multivariate(scenarios, reduced, p=p)
+        dist, plan = wasserstein_distance(mu, nu, cost)
+        if dist < best_distance:
+            best_distance = dist
+            best_subset = comb
 
-        # Aggiungi il miglior candidato
-        selected_indices.append(best_index)
-        remaining_indices.remove(best_index)
-
-    reduced_scenarios = scenarios[selected_indices]
-    return selected_indices, reduced_scenarios, min_distance
+    return list(best_subset), scenarios[list(best_subset)], best_distance
