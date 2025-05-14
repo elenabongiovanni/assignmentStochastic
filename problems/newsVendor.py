@@ -3,6 +3,7 @@ from gurobipy import GRB
 from instances import *
 from data import *
 
+
 def newsVendor(demand, prob, parameters):
 
     n_scenarios = len(demand)
@@ -39,3 +40,15 @@ def newsVendor(demand, prob, parameters):
     print(ottimo)
 
     return ottimo, m.ObjVal
+
+def compute_objective_NewsVendor(solution, demand, parameters):
+    """
+    Calcola il valore obiettivo (profitto) di una soluzione fissata nel problema del Newsvendor.
+    """
+    selling_price = parameters.get('selling_price')
+    cost = parameters.get('cost')
+
+    sold = min(solution, demand)
+    return selling_price * sold - cost * solution
+
+

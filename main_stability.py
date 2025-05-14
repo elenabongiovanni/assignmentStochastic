@@ -22,7 +22,7 @@ setting_ATO = scenario_setting_ATO
 num_variables_NewsVendor = 1
 setting_NewsVendor = scenario_setting_NewsVendor
 
-n_scenarios_ATO = inSaampleStability_ATO(n_scenarios, num_variables_ATO, setting_ATO, tol)
+n_scenarios_ATO = inSampleStability_ATO(n_scenarios, num_variables_ATO, setting_ATO, tol)
 print('n_scenari_finale', n_scenarios_ATO)
 
 #n_scenarios_NV = inSampleStability_NewsVendor(n_scenarios, num_variables_NewsVendor, setting_NewsVendor, tol)

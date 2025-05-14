@@ -12,9 +12,10 @@ from solvers import *
 from sklearn.cluster import AgglomerativeClustering
 from scipy.spatial.distance import cdist
 
+# per verificare che il numero di scenari utilizzato sia sufficiente per garantire una soluzione stabile, che non dipende troppo dal particolare campione di scenari
 
-def inSaampleStability_ATO(n_scenarios, num_variables_ATO, setting_ATO, tol):
 
+def inSampleStability_ATO(n_scenarios, num_variables_ATO, setting_ATO, tol):
     val_1 = 100
     val_2 = 0
 
@@ -40,7 +41,7 @@ def inSaampleStability_ATO(n_scenarios, num_variables_ATO, setting_ATO, tol):
         print('n_scenario', n_scenarios)
         n_scenarios = n_scenarios + 1
         print('differenza',abs(val_1-val_2))
-        
+    
 
     return n_scenarios
 
