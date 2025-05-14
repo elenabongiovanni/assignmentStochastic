@@ -135,11 +135,11 @@ class ScenarioTree(nx.DiGraph):
         )
         return prob, obs
     
-    def euclideanDistance(self, id1, id2):
+    """def euclideanDistance(self, id1, id2):
         obs_node1 = self.nodes[id1]['obs']
         # obs_node1 = np.array(self.nodes[id1]['obs']) nel caso in cui non fosse già un array
         obs_node2 = self.nodes[id2]['obs']
-        return np.linalg.norm(obs_node1-obs_node2)
+        return np.linalg.norm(obs_node1-obs_node2)"""
     
     def get_all_scenarios(self):
         all_scenarios = []

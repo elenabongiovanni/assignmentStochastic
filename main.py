@@ -11,9 +11,10 @@ import plantLocation
 import newsVendor
 import assembleToOrder
 import wasserstainDistance
+#from data import Generation
 
-demand = generation.generate_random_demand(50, 0, 20)
-prob = generation.generate_random_prob(50)
+#demand = generation.generate_random_demand(50, 0, 20)
+#prob = generation.generate_random_prob(50)
 price = 10
 cost = 3
 
@@ -57,8 +58,16 @@ cost3 = 2
 ottimo3, val3 = newsVendor.newsVendor(domanda3, prob3, selling_price3, cost3)
 
 # Parametri di esempio
-branching_factors = [5]  
-stoch_model = StochModel(3)
+
+# parametri presi a caso
+branching_factors = [12]  
+"""n_children = 1
+for i in len(branching_factors):
+    n_children = n_children * branching_factors[i]"""
+num_variables = 5
+seed = 250
+
+stoch_model = StochModel(num_variables, seed)
 initial_value = [stoch_model.expected]  # valore iniziale della decisione (es. giornali acquistati)
 
 # Crea l'albero degli scenari
@@ -69,6 +78,6 @@ tree.plot()
 
 # Salvo gli scenari
 scenari = tree.get_all_scenarios()
-best_subset, scenari[best_subset], best_distance = wasserstainDistance.reduce_scenarios_wasserstein(scenari, 3, p=2)
+best_subset, scenari[best_subset], best_distance = wasserstainDistance.reduce_scenarios_nearest_neighbors(scenari, 20, p=2)
 print(best_subset)
 print(scenari[best_subset])
