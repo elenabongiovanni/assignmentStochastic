@@ -32,8 +32,8 @@ def inSampleStability_ATO(n_scenarios, num_variables_ATO, setting_ATO, tol):
         [prob_ATO_1,demand_ATO_1] = stoch_model_ATO_1.simulate_one_time_step(None, n_scenarios)
         [prob_ATO_2,demand_ATO_2] = stoch_model_ATO_2.simulate_one_time_step(None, n_scenarios)
 
-        print('demand 1', demand_ATO_1)
-        print('demand 2',demand_ATO_2)
+        #print('demand 1', demand_ATO_1)
+        #print('demand 2',demand_ATO_2)
 
         ottimo_1, val_1 = assembleToOrder(demand_ATO_1, prob_ATO_1, parameters_ATO)
         ottimo_2, val_2 = assembleToOrder(demand_ATO_2, prob_ATO_2, parameters_ATO)
@@ -63,6 +63,7 @@ def inSampleStability_NewsVendor(n_scenario, num_variables_NewsVendor, setting_N
 
         [prob_NV_1,demand_NV_1] = stoch_model_NewsVendor_1.simulate_one_time_step(None, n_scenario)
         [prob_NV_2,demand_NV_2] = stoch_model_NewsVendor_1.simulate_one_time_step(None, n_scenario)
+
 
         ottimo_1, val_1 = newsVendor(demand_NV_1[0], prob_NV_1, parameters_NewsVendor)
         ottimo_2, val_2 = newsVendor(demand_NV_2[0], prob_NV_2, parameters_NewsVendor)

@@ -69,40 +69,31 @@ def compute_objective_ATO(solution, demand, parameters):
     solution: lista con quantità ordinate di ogni componente (x)
     demand: array 2D [n_items x n_scenarios]
     """
-    n_scenarios = demand.shape[1]
+
     n_components = parameters.get('n_components')
     n_items = parameters.get('n_items')
     selling_price = parameters.get('selling_prices')
-    cost = parameters.get('costs')
+    #cost = parameters.get('costs')
     g = parameters.get('gozinto_factor')  # matrice [n_components x n_items]
 
-    total_value = 0
+    m = gp.Model("evaluate_scenario_ATO")
+    m.setParam('OutputFlag', 0)
+    
+    y = m.addVars(n_items, vtype=GRB.INTEGER, lb=0, name="Y")
 
-    for s in range(n_scenarios):
-        revenue = 0
-        # Calcola i prodotti effettivamente assemblabili per lo scenario s
-        remaining_components = solution.copy()  # componenti disponibili
+    m.setObjective(gp.quicksum(selling_price[j] * y[j] for j in range(n_items)),
+            GRB.MAXIMIZE)
+    
 
-        y = [0] * n_items  # prodotti venduti nello scenario s
+    # Vincoli:
+    for j in range(n_items):
+        m.addConstr(y[j] <= demand[j])  # non si può vendere più della domanda
 
-        # Strategia greedy: prova a soddisfare la domanda usando i componenti disponibili
-        for j in range(n_items):
-            max_demand = demand[j, s]
-            max_producible = min(
-                max_demand,
-                min([
-                    remaining_components[i] // g[i][j] if g[i][j] > 0 else float('inf')
-                    for i in range(n_components)
-                ])
-            )
-            y[j] = max_producible
-            for i in range(n_components):
-                remaining_components[i] -= g[i][j] * y[j]
+    for i in range(n_components):
+        m.addConstr(
+            gp.quicksum(g[i][j] * y[j] for j in range(n_items)) <= solution[i]  # non superare le componenti disponibili
+        )
 
-            revenue += selling_price[j] * y[j]
-
-        cost_components = sum(cost[i] * solution[i] for i in range(n_components))
-        value = revenue - cost_components
-        total_value += value / n_scenarios
-
-    return total_value
+    # Risolvi
+    m.optimize()
+    return m.ObjVal  # Profitto ottenuto in questo scenario
