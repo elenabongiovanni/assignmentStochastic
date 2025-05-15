@@ -32,7 +32,7 @@ def evaluate_solution(solution, demand, probabilities, parameters, objective_fun
     
 
 
-def outOfSampleStabilityATO(n_scenarios_train, n_scenarios_test, num_variables_ATO, setting_ATO, n_repeat):
+def outOfSampleStability_ATO(n_scenarios_train, n_scenarios_test, num_variables_ATO, setting_ATO, n_repeat):
     # a differenza della in sample devo ripetere il test più volte per avere una stima affidabile della performance
 
     # genero gli scenari di training
@@ -84,7 +84,4 @@ def outOfSampleStability_NewsVendor(n_scenarios_train, n_scenarios_test, num_var
     mean_value = np.mean(out_of_sample_values)
     coefficiente_variazione = std_dev/mean_value
     
-    return std_dev, coefficiente_variazione
-
-
-    
+    return std_dev, coefficiente_variazione    

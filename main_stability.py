@@ -40,7 +40,7 @@ n_scenarios_train = 20
 n_scenarios_test = 100
 n_repeat = 10
 
-std_dev_ATO, cv_ATO = outOfSampleStabilityATO( n_scenarios_train, n_scenarios_test, num_variables_ATO, setting_ATO, n_repeat)
+std_dev_ATO, cv_ATO = outOfSampleStability_ATO( n_scenarios_train, n_scenarios_test, num_variables_ATO, setting_ATO, n_repeat)
 print('deviazione standard ATO', std_dev_ATO)
 print('misura relativa di stabilità ATO', cv_ATO)
 
