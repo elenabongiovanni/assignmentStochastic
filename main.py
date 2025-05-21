@@ -1,6 +1,7 @@
 import numpy as np
 
 from clustering.wasserstainDistance import *
+from clustering.momentMatching import *
 from data.parameters import *
 from problems.assembleToOrder import *
 from problems.newsVendor import *
@@ -14,7 +15,7 @@ from scipy.spatial.distance import cdist
 
 #### MODELLO ####
 
-branching_factors = [12]  
+branching_factors = [200]  
 
 num_variables_ATO = parameters_ATO.get('n_items')
 num_variables_NewsVendor = 1
@@ -62,3 +63,15 @@ parameters_newsvendor = parameters_NewsVendor
 [prob_NV,demand_NV] = stoch_model_NewsVendor.simulate_one_time_step(None, branching_factors[0])
 
 ottimo3, val3 = newsVendor(demand_NV[0], prob_NV, parameters_newsvendor)
+
+num_reduce = 20
+best_subset, best_distance = reduce_scenarios_wasserstein(scenari_NewsVendor, num_reduce, p=2)
+#print(best_distance)
+
+sigma2 = scenario_setting_NewsVendor.get('devstd')
+mu = scenario_setting_NewsVendor.get('expectedValue')
+
+weight = 1
+best_subset, best_distance = reduce_scenarios_momentmatching(scenari_NewsVendor, num_reduce,mu,sigma2,weight)
+print(best_distance)
+

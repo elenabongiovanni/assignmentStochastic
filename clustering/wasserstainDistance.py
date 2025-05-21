@@ -1,7 +1,6 @@
 import numpy as np
 import gurobipy as gp
 from gurobipy import GRB
-import itertools
 
 def compute_cost_matrix_multivariate(points_mu, points_nu, p=2):
     """
@@ -106,17 +105,44 @@ def reduce_scenarios_wasserstein(scenarios, num_reduce, p=2):
     n = len(scenarios)
     mu = np.ones(n) / n  # probabilità uniformi
 
-    combinations = list(itertools.combinations(range(n), num_reduce))
-    best_distance = float("inf")
+    # coppie generate da scenari random per clacolare delle distanze e ricavare una tolleranza    
+    best_distance = 10000000
     best_subset = None
 
-    for comb in combinations:
-        reduced = scenarios[list(comb)]
+    for i in range(1,10):
+        scenario_reduce = scenarios[np.random.choice(scenarios.shape[0],size = num_reduce, replace = False)]
+        nu = np.ones(num_reduce) / num_reduce
+        cost = compute_cost_matrix_multivariate(scenarios,scenario_reduce,p=p)
+        dist,plan = wasserstein_distance(mu,nu,cost)
+        if dist < best_distance:
+            best_distance = dist
+            best_subset = scenario_reduce
+
+    return best_subset, best_distance
+
+
+
+    """idx = np.random.permutation(100)
+    print('aaaaaa')
+    coppie = [(scenariosample[idx[i]], scenariosample[idx[i+1]]) for i in range(0,100,2)]
+    print('ciao')
+    distanze = np.array([wasserstein_distance(a,b) for a,b in coppie])
+    toll = np.quantile(distanze,0.1) 
+    print(toll)
+    combinations = list(itertools.combinations(range(n), num_reduce)) 
+    best_distance = float("inf")
+    best_subset = None
+    i=0
+    while best_distance > toll and i < len(combinations):
+        reduced = scenarios[list(combinations[i])]
         nu = np.ones(num_reduce) / num_reduce
         cost = compute_cost_matrix_multivariate(scenarios, reduced, p=p)
         dist, plan = wasserstein_distance(mu, nu, cost)
         if dist < best_distance:
             best_distance = dist
-            best_subset = comb
+            best_subset = combinations[i]
+        print(best_distance)
+        i = i+1
 
-    return list(best_subset), scenarios[list(best_subset)], best_distance
+    return list(best_subset), scenarios[list(best_subset)], best_distance"""
+    
