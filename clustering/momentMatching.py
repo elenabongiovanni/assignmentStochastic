@@ -41,20 +41,27 @@ def momentmatching(mu,sigma2,weight,scenarios):
 
 
 def reduce_scenarios_momentmatching(scenarios, num_reduce,mu,sigma2,weight):
-    
+    n_item = scenarios.shape[1]
     scenarios = np.array(scenarios)
     n = len(scenarios)
     # coppie generate da scenari random per clacolare delle distanze e ricavare una tolleranza    
     best_distance = 10000000
     best_subset = None
-
+    """
     for i in range(1,10):
         scenario_reduce = scenarios[np.random.choice(scenarios.shape[0],size = num_reduce, replace = False)]
-        dist,prob = momentmatching(mu,sigma2,weight,scenarios)
+        dist,prob = momentmatching(mu,sigma2,weight,scenario_reduce)
         if dist < best_distance:
             best_distance = dist
             best_subset = scenario_reduce
+    """
+    best_subset = scenarios[np.random.choice(scenarios.shape[0],size = num_reduce, replace = False)]
+    best_distance,prob = momentmatching(mu,sigma2,weight,best_subset)
+    subset = np.zeros((n_item,num_reduce))
+    for i in range(n_item):
+        subset[i,:] = best_subset[:,i]
 
-    return best_subset, best_distance
+
+    return subset, best_distance, prob
 
 

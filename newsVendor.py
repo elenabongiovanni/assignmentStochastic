@@ -38,7 +38,7 @@ def newsVendor(demand, prob, selling_price, cost):
     # Solve
     m.optimize()
     ottimo = n_neswpaper.X
-    print(ottimo)
+    print("Valore ottimo",ottimo)
 
     #calcolo funzione obbiettivo per tutti gli scenari con x=ottimo
     """for i in range(n_scenarios):

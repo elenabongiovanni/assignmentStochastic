@@ -52,7 +52,7 @@ def assembleToOrder(demand, prob, parameters):
     # Solve
     m.optimize()
     ottimo = [x[i].X for i in range(n_components)]
-    print(ottimo)
+    print("Valore ottimo ATO: ",ottimo)
 
     print(f"Quantity of each component: {ottimo}")
     print(m.ObjVal)
