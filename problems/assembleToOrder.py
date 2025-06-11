@@ -6,7 +6,7 @@ from data import *
 def assembleToOrder(demand, prob, parameters):
  
     exp_val = 0
-    n_scenarios = len(demand)
+    n_scenarios = demand.shape[1]
     n_components = parameters.get('n_components')
     n_items = parameters.get('n_items')
     cost = parameters.get('costs')
@@ -55,7 +55,7 @@ def assembleToOrder(demand, prob, parameters):
     print("Valore ottimo ATO: ",ottimo)
 
     print(f"Quantity of each component: {ottimo}")
-    print(m.ObjVal)
+    print(f"ottimo:{m.ObjVal}")
 
     return ottimo, m.ObjVal
 

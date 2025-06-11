@@ -38,9 +38,9 @@ def inSampleStability_ATO(n_scenarios, num_variables_ATO, setting_ATO, tol):
         ottimo_1, val_1 = assembleToOrder(demand_ATO_1, prob_ATO_1, parameters_ATO)
         ottimo_2, val_2 = assembleToOrder(demand_ATO_2, prob_ATO_2, parameters_ATO)
 
-        print('n_scenario', n_scenarios)
+        #print('n_scenario', n_scenarios)
         n_scenarios = n_scenarios + 1
-        print('differenza',abs(val_1-val_2))
+        #print('differenza',abs(val_1-val_2))
     
 
     return n_scenarios
@@ -69,7 +69,7 @@ def inSampleStability_NewsVendor(n_scenario, num_variables_NewsVendor, setting_N
         ottimo_2, val_2 = newsVendor(demand_NV_2[0], prob_NV_2, parameters_NewsVendor)
 
         n_scenario = n_scenario + 1
-        print('differenza',abs(val_1-val_2))
+        #print('differenza',abs(val_1-val_2))
 
 
     return n_scenario

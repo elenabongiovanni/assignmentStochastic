@@ -150,7 +150,7 @@ class ScenarioTree(nx.DiGraph):
                 if not skipped_first:
                     skipped_first = True
                     continue  # Salta il primo scenario
-                print(f"Scenario for node {node}: {self.nodes[node]['obs']}")
+                #print(f"Scenario for node {node}: {self.nodes[node]['obs']}")
                 all_scenarios.append(self.nodes[node]['obs']) 
 
         # Verifica che tutti gli scenari abbiano la stessa lunghezza

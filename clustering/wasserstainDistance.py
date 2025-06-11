@@ -118,7 +118,7 @@ def reduce_scenarios_wasserstein(scenarios, num_reduce, p=2):
             best_distance = dist
             best_subset = scenario_reduce
 
-    return best_subset, best_distance
+    return best_subset, best_distance, nu
 
 
 
