@@ -1,6 +1,5 @@
 import gurobipy as gp
 from gurobipy import GRB
-from instances import *
 from data import *
 
 def assembleToOrder(demand, prob, parameters):
@@ -52,10 +51,10 @@ def assembleToOrder(demand, prob, parameters):
     # Solve
     m.optimize()
     ottimo = [x[i].X for i in range(n_components)]
-    print("Valore ottimo ATO: ",ottimo)
+    #print("Valore ottimo ATO: ",ottimo)
 
-    print(f"Quantity of each component: {ottimo}")
-    print(f"ottimo:{m.ObjVal}")
+    #print(f"Quantity of each component: {ottimo}")
+    #print(f"ottimo:{m.ObjVal}")
 
     return ottimo, m.ObjVal
 

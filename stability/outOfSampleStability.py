@@ -4,7 +4,6 @@ from clustering.wasserstainDistance import *
 from data.parameters import *
 from problems.assembleToOrder import *
 from problems.newsVendor import *
-from instances import *
 from result import *
 from setting.scenarioSetting import *
 from solvers import *

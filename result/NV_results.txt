@@ -1,0 +1,13 @@
+=== RISULTATI NEWSVENDOR ===
+Valore ottimo con MC completo: 57.5500
+Valore ottimo con Moment Matching: 66.4681
+Distanza Moment Matching: -0.0000
+Valore ottimo con Wasserstein: 57.0000
+Distanza Wasserstein: 0.4532
+Differenza Moment Matching - MC: 8.9181
+Differenza Wasserstein - MC: 0.5500
+
+=== STABILITÀ NEWSVENDOR ===
+In-sample stability (min n_scenarios): 60
+Out-of-sample STD: 2.4620
+Out-of-sample CV : 0.0416

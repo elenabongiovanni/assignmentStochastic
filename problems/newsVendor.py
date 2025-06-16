@@ -1,6 +1,5 @@
 import gurobipy as gp
 from gurobipy import GRB
-from instances import *
 from data import *
 
 
@@ -37,7 +36,7 @@ def newsVendor(demand, prob, parameters):
     # Solve
     m.optimize()
     ottimo = n_neswpaper.X
-    print("Valore ottimo: ",ottimo)
+    #print("Valore ottimo: ",ottimo)
 
     return ottimo, m.ObjVal
 
