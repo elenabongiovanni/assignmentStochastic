@@ -43,7 +43,7 @@ ottimo_NV, val_NV = newsVendor(scenari_NewsVendor.reshape(-1), prob_Newsvendor, 
 
 #### SIMULATION WITH REDUCED SCENARIOS: MOMENT MATCHING
 
-num_reduce = 10
+num_reduce = 50
 
 sigma2 = scenario_setting_NewsVendor.get('devstd')
 mu = scenario_setting_NewsVendor.get('expectedValue')
@@ -56,13 +56,12 @@ ottimo_NV_MM, val_NV_MM = newsVendor(NV_best_subset_MM[0], NV_prob_MM, parameter
 
 ##### SIMULATION WITH REDUCED SCENARIOS: WASSERSTEIN DISTANCE
 
-num_reduce = 20
+num_reduce = 50
 NV_best_subset_W, NV_best_distance_W, NV_prob_W = reduce_scenarios_wasserstein(scenari_NewsVendor, num_reduce, p=2)
 print("Best distance with Wasserstein: ",NV_best_distance_W)
 ottimo_NV_W, val_NV_W = newsVendor(NV_best_subset_W.T[0], NV_prob_W, parameters_newsvendor)
 
-save_newsvendor_results(val_NV, val_NV_MM, NV_best_distance_MM, val_NV_W, NV_best_distance_W)
-
+save_newsvendor_results(val_NV, ottimo_NV, scenari_NewsVendor.reshape(-1), val_NV_MM, ottimo_NV_MM, NV_best_distance_MM, NV_best_subset_MM[0], val_NV_W,  ottimo_NV_W, NV_best_distance_W, NV_best_subset_W.T[0])
 
 
 ###########################
@@ -90,20 +89,20 @@ prob_ATO = [float(tree_ATO.nodes[leaf]['path_prob']) for leaf in tree_ATO.leaves
 
 parameters_ato = parameters_ATO 
 
-ottimo2, val2 = assembleToOrder(scenari_ATO.T, prob_ATO, parameters_ato)
+ottimo_ATO, val_ATO = assembleToOrder(scenari_ATO.T, prob_ATO, parameters_ato)
 
 
 #### SIMULATION WITH REDUCED SCENARIOS: MOMENT MATCHING
 
-num_reduce = 20
+num_reduce = 50
 
 mu = scenario_setting_ATO['expectedValue']
 sigma = scenario_setting_ATO['devstd']
 
 # Assicurati che mu e sigma2 abbiano dimensione corretta
 d = scenari_ATO.shape[1]
-mu = np.full(d, mu[0])  # [400, 400, 400, 400, 400]
-sigma2 = np.full(d, sigma**2)  # [90000, 90000, 90000, 90000, 90000]
+mu = np.full(d, mu[0])  
+sigma2 = np.full(d, sigma**2)  
 
 weight = 1
 ATO_best_subset_MM, ATO_best_distance_MM, ATO_prob_MM = reduce_scenarios_momentmatching(scenari_ATO, num_reduce,mu,sigma2,weight)
@@ -115,11 +114,12 @@ ottimo_ATO_MM, val_ATO_MM = assembleToOrder(ATO_best_subset_MM, ATO_prob_MM, par
 
 ##### SIMULATION WITH REDUCED SCENARIOS: WASSERSTEIN DISTANCE
 
-num_reduce = 20
+num_reduce = 50
 
 ATO_best_subset_W, ATO_best_distance_W, ATO_prob_W = reduce_scenarios_wasserstein(scenari_ATO, num_reduce, p=2)
 print("Best distance with Wasserstein: ",ATO_best_distance_W)
 ottimo_ATO_W, val_ATO_W = assembleToOrder(ATO_best_subset_W.T, ATO_prob_W, parameters_ato)
 
-save_ato_results(val2, val_ATO_MM, ATO_best_distance_MM, val_ATO_W, ATO_best_distance_W)
+save_ato_results(val_ATO, ottimo_ATO, scenari_ATO.T, val_ATO_MM, ottimo_ATO_MM, ATO_best_distance_MM, ATO_best_subset_MM.T, val_ATO_W, ottimo_ATO_W, ATO_best_distance_W, ATO_best_subset_W)
+
 

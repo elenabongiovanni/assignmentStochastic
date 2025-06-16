@@ -1,13 +1,19 @@
-=== RISULTATI NEWSVENDOR ===
-Valore ottimo con MC completo: 57.5500
-Valore ottimo con Moment Matching: 66.4681
-Distanza Moment Matching: -0.0000
-Valore ottimo con Wasserstein: 57.0000
-Distanza Wasserstein: 0.4532
-Differenza Moment Matching - MC: 8.9181
-Differenza Wasserstein - MC: 0.5500
+=== NEWSVENDOR RESULTS ===
+Optimal value with full MC: 55.6500
+Optimal quantity (MC): 11.00
 
-=== STABILITÀ NEWSVENDOR ===
-In-sample stability (min n_scenarios): 60
-Out-of-sample STD: 2.4620
-Out-of-sample CV : 0.0416
+Optimal value with Moment Matching: 57.9899
+Optimal quantity (Moment Matching): 11.00
+Moment Matching distance: -0.0000
+
+Optimal value with Wasserstein: 55.8000
+Optimal quantity (Wasserstein): 11.00
+Wasserstein distance: 0.1891
+
+Difference MM - MC: 2.3399
+Difference Wasserstein - MC: 0.1500
+
+=== NEWSVENDOR STABILITY ===
+In-sample stability (min number of scenarios): 60
+Out-of-sample standard deviation: 2.4620
+Out-of-sample coefficient of variation: 0.0416

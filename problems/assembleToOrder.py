@@ -21,8 +21,8 @@ def assembleToOrder(demand, prob, parameters):
     m = gp.Model("assembleToOrder")
     m.setParam('OutputFlag', 0)
 
-    x = m.addVars(n_components, vtype=GRB.INTEGER, lb=0, name="X") #quantity of each component
-    y = m.addVars(n_items, n_scenarios, vtype=GRB.INTEGER, lb=0, name="Y") #quantity of each item
+    x = m.addVars(n_components, vtype=GRB.INTEGER, lb=0, name="X") # Quantity of each component
+    y = m.addVars(n_items, n_scenarios, vtype=GRB.INTEGER, lb=0, name="Y") # Quantity of each item
 
     # Objective Function
     sum_costs_components = sum(cost[i] * x[i] for i in range(n_components))
@@ -51,15 +51,10 @@ def assembleToOrder(demand, prob, parameters):
     # Solve
     m.optimize()
     ottimo = [x[i].X for i in range(n_components)]
-    #print("Valore ottimo ATO: ",ottimo)
-
-    #print(f"Quantity of each component: {ottimo}")
-    #print(f"ottimo:{m.ObjVal}")
 
     return ottimo, m.ObjVal
 
 
-# da riguardare copiata da chat!!!
 def compute_objective_ATO(solution, demand, parameters):
     """
     Valuta il valore della soluzione fissa `solution` (componenti ordinate)

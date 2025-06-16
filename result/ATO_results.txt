@@ -1,13 +1,19 @@
-=== RISULTATI ATO ===
-Valore ottimo con MC completo: 414.8500
-Valore ottimo con Moment Matching: 469.2184
-Distanza Moment Matching: -0.0000
-Valore ottimo con Wasserstein: 421.0000
-Distanza Wasserstein: 2.4346
-Differenza Moment Matching - MC: 54.3684
-Differenza Wasserstein - MC: 6.1500
+=== ATO RESULTS ===
+Optimal value with full MC: 381.5000
+Produced quantities (Full MC): 22.00, 22.00, 9.00, 8.00, 10.00
 
-=== STABILITÀ ATO ===
-In-sample stability (min n_scenarios): 110
-Out-of-sample STD: 9.1389
-Out-of-sample CV : 0.0054
+Optimal value with Moment Matching: 440.4867
+Produced quantities (Moment Matching): 25.00, 25.00, 10.00, 9.00, 11.00
+Moment Matching distance: -0.0000
+
+Optimal value with Wasserstein: 377.6000
+Produced quantities (Wasserstein): 23.00, 23.00, 9.00, 9.00, 10.00
+Wasserstein distance: 1.7531
+
+Difference MM - MC: 58.9867
+Difference Wasserstein - MC: 3.9000
+
+=== ATO STABILITY ===
+In-sample stability (min number of scenarios): 110
+Out-of-sample standard deviation: 9.1389
+Out-of-sample coefficient of variation: 0.0054

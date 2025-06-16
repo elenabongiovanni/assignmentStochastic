@@ -1,6 +1,7 @@
 import numpy as np
 
-# Parametri ATO
+# ATO Parameters
+
 costs = np.array([20, 30, 10, 10, 10])
 selling_prices = np.array([80,70,90])
 machine_capacities =np.array([800,700,600])
@@ -16,7 +17,7 @@ parameters_ATO = {
     'time_required' : np.array([[1,2,1], [1,2,2], [2,2,0], [1,2,0], [3,2,0]]),
 }
 
-# Parametri NewsVendor
+# NewsVendor Parameters
 
 parameters_NewsVendor = {
     'cost' : 3,
