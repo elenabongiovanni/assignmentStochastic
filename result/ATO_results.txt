@@ -1,19 +1,89 @@
 === ATO RESULTS ===
-Optimal value with full MC: 381.5000
-Produced quantities (Full MC): 22.00, 22.00, 9.00, 8.00, 10.00
+Optimal value with full MC: 2472.1000
+Produced quantities (Full MC): 115.00, 115.00, 47.00, 24.00, 49.00
 
-Optimal value with Moment Matching: 440.4867
-Produced quantities (Moment Matching): 25.00, 25.00, 10.00, 9.00, 11.00
+Optimal value with Moment Matching: 2471.2913
+Produced quantities (Moment Matching): 115.00, 115.00, 47.00, 23.00, 50.00
 Moment Matching distance: -0.0000
 
-Optimal value with Wasserstein: 377.6000
-Produced quantities (Wasserstein): 23.00, 23.00, 9.00, 9.00, 10.00
-Wasserstein distance: 1.7531
+Optimal value with Wasserstein: 2471.0000
+Produced quantities (Wasserstein): 115.00, 115.00, 47.00, 24.00, 49.00
+Wasserstein distance: 1.8696
 
-Difference MM - MC: 58.9867
-Difference Wasserstein - MC: 3.9000
+Difference between MM - MC: 0.8087
+Difference between Wasserstein - MC: 1.1000
 
 === ATO STABILITY ===
-In-sample stability (min number of scenarios): 110
-Out-of-sample standard deviation: 9.1389
-Out-of-sample coefficient of variation: 0.0054
+In-sample stability (min number of scenarios): 30
+Out-of-sample standard deviation: 13.2906
+Out-of-sample coefficient of variation: 0.0014
+
+=== ATO STABILITY ===
+In-sample stability (min number of scenarios): 190
+Out-of-sample standard deviation: 9.3675
+Out-of-sample coefficient of variation: 0.0010
+
+=== ATO STABILITY ===
+In-sample stability (min number of scenarios): 70
+Out-of-sample standard deviation: 10.8014
+Out-of-sample coefficient of variation: 0.0011
+
+=== ATO STABILITY ===
+In-sample stability (min number of scenarios): 190
+Out-of-sample standard deviation: 9.3675
+Out-of-sample coefficient of variation: 0.0010
+
+=== ATO STABILITY ===
+In-sample stability (min number of scenarios): 190
+Out-of-sample standard deviation: 9.3675
+Out-of-sample coefficient of variation: 0.0010
+
+=== ATO STABILITY ===
+In-sample stability (min number of scenarios): 30
+Out-of-sample standard deviation: 13.2906
+Out-of-sample coefficient of variation: 0.0014
+
+=== ATO STABILITY ===
+In-sample stability (min number of scenarios): 70
+Out-of-sample standard deviation: 10.8014
+Out-of-sample coefficient of variation: 0.0011
+
+=== ATO STABILITY ===
+In-sample stability (min number of scenarios): 70
+Out-of-sample standard deviation: 10.8014
+Out-of-sample coefficient of variation: 0.0011
+
+=== ATO STABILITY ===
+In-sample stability (min number of scenarios): 190
+Out-of-sample standard deviation: 9.3675
+Out-of-sample coefficient of variation: 0.0010
+
+=== ATO STABILITY ===
+In-sample stability (min number of scenarios): 70
+Out-of-sample standard deviation: 10.8014
+Out-of-sample coefficient of variation: 0.0011
+
+=== ATO STABILITY ===
+In-sample stability (min number of scenarios): 30
+Out-of-sample standard deviation: 20.6725
+Out-of-sample coefficient of variation: 0.0022
+
+=== ATO STABILITY ===
+In-sample stability (min number of scenarios): 70
+Out-of-sample standard deviation: 10.8014
+Out-of-sample coefficient of variation: 0.0011
+
+=== ATO STABILITY ===
+In-sample stability (min number of scenarios): 150
+Out-of-sample standard deviation: 14.1071
+Out-of-sample coefficient of variation: 0.0015
+
+=== ATO STABILITY ===
+In-sample stability (min number of scenarios): 150
+Out-of-sample standard deviation: 12.5900
+Out-of-sample coefficient of variation: 0.0013
+
+=== ATO STABILITY ===
+In-sample stability (min number of scenarios): 150
+Out-of-sample standard deviation: 15.6953
+Out-of-sample coefficient of variation: 0.0017

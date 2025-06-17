@@ -2,7 +2,9 @@ import os
 import json
 
 def save_ato_results(val_mc, opt_mc, demand_mc, val_mm, opt_mm, dist_mm, demand_mm, val_w, opt_w, dist_w, demando_w, filename="ATO_results.txt"):
+
     path = os.path.join("result", filename)
+
     with open(path, "w") as f:
         f.write("=== ATO RESULTS ===\n")
         f.write(f"Optimal value with full MC: {val_mc:.4f}\n")
@@ -21,8 +23,8 @@ def save_ato_results(val_mc, opt_mc, demand_mc, val_mm, opt_mm, dist_mm, demand_
 
         diff_mm = abs(val_mm - val_mc)
         diff_w = abs(val_w - val_mc)
-        f.write(f"Difference MM - MC: {diff_mm:.4f}\n")
-        f.write(f"Difference Wasserstein - MC: {diff_w:.4f}\n")
+        f.write(f"Difference between MM - MC: {diff_mm:.4f}\n")
+        f.write(f"Difference between Wasserstein - MC: {diff_w:.4f}\n")
 
     print(f"ATO results saved in {path}")
 
@@ -53,7 +55,7 @@ def save_ato_results_stability(val_mc=None, val_mm=None, dist_mm=None, val_w=Non
                                filename_txt="ATO_results.txt",
                                filename_json="ATO_results.json"):
     
-    # Salvataggio su file di testo (come prima)
+    # Save results on the txt file
     path_txt = os.path.join("result", filename_txt)
     with open(path_txt, "a") as f:
         f.write("\n=== ATO STABILITY ===\n")
@@ -65,10 +67,10 @@ def save_ato_results_stability(val_mc=None, val_mm=None, dist_mm=None, val_w=Non
     
     print(f"ATO stability saved in {path_txt}")
 
-    # Salvataggio history in JSON, se presente
+    # Save results on the JSON file
     if history is not None:
         path_json = os.path.join("result", "ato_results_stability.json")
         with open(path_json, "w") as jf:
             json.dump(history, jf, indent=4)
-        print(f"ATO stability history saved in {path_json}")
+        print(f"ATO stability saved in {path_json}")
 

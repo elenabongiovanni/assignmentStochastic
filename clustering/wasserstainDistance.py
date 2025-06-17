@@ -3,32 +3,15 @@ import gurobipy as gp
 from gurobipy import GRB
 
 def compute_cost_matrix_multivariate(points_mu, points_nu, p=2):
-    """
-    Calcola la matrice dei costi tra punti multivariati usando la norma p.
 
-    Parameters:
-    -----------
-    points_mu : array-like, shape (m, d)
-        Scenari originali (m scenari, d dimensioni).
-    points_nu : array-like, shape (n, d)
-        Scenari ridotti (n scenari, d dimensioni).
-    p : int, optional
-        Norm p da usare (default = 2 → distanza euclidea).
-
-    Returns:
-    --------
-    cost_matrix : ndarray, shape (m, n)
-        Matrice dei costi: costo di trasportare massa da i a j.
-    """
     points_mu = np.array(points_mu)
     points_nu = np.array(points_nu)
 
-    # Estrae le dimensioni di points
     m, d1 = points_mu.shape
     n, d2 = points_nu.shape
 
     if d1 != d2:
-        raise ValueError("Le due serie di punti devono avere la stessa dimensione")
+        raise ValueError("Points must have same dimension")
 
     cost_matrix = np.zeros((m, n))
 
@@ -40,53 +23,31 @@ def compute_cost_matrix_multivariate(points_mu, points_nu, p=2):
     return cost_matrix
 
 def wasserstein_distance(mu, nu, cost_matrix):
-    """
-    Compute the 1-Wasserstein distance between two discrete distributions using Gurobi.
-
-    Parameters:
-    -----------
-    mu : array-like, shape (m,)
-        Probability distribution of the first set of points (source).
-    nu : array-like, shape (n,)
-        Probability distribution of the second set of points (target).
-    cost_matrix : array-like, shape (m, n)
-        The cost matrix where cost_matrix[i][j] is the cost of transporting mass from
-        point i in mu to point j in nu.
     
-    Returns:
-    --------
-    wasserstein_distance : float
-        The computed Wasserstein distance between mu and nu.
-    transport_plan : array, shape (m, n)
-        The optimal transport plan.
-    """
     m = len(mu)
     n = len(nu)
 
-    # Create a Gurobi model
+    # Model
     model = gp.Model("wasserstein")
 
-    # Disable Gurobi output (comment this if you want to see Gurobi's solver output)
     model.setParam("OutputFlag", 0)
 
-    # Decision variables: transport plan gamma_ij
+    # Decision variables
     gamma = model.addVars(m, n, lb=0, ub=GRB.INFINITY, name="gamma")
 
-    # Objective: minimize the sum of the transport costs
+    # Objective function
     model.setObjective(gp.quicksum(cost_matrix[i, j] * gamma[i, j] for i in range(m) for j in range(n)), GRB.MINIMIZE)
 
-    # Constraints: ensure that the total mass transported from each mu_i matches the corresponding mass in mu
+    # Constraints
+
     for i in range(m):
-        model.addConstr(gp.quicksum(gamma[i, j] for j in range(n)) == mu[i], name=f"supply_{i}")
+        model.addConstr(gp.quicksum(gamma[i, j] for j in range(n)) == mu[i], name=f"supply_{i}") # Total mass transported from each mu_i matches the corresponding mass in mu
 
-    # Constraints: ensure that the total mass transported to each nu_j matches the corresponding mass in nu
     for j in range(n):
-        model.addConstr(gp.quicksum(gamma[i, j] for i in range(m)) == nu[j], name=f"demand_{j}")
+        model.addConstr(gp.quicksum(gamma[i, j] for i in range(m)) == nu[j], name=f"demand_{j}") # Total mass transported to each nu_j matches the corresponding mass in nu
 
-    # Solve the optimization model
     model.optimize()
 
-    # Extract the optimal transport plan and the Wasserstein distance
     if model.status == GRB.OPTIMAL:
         transport_plan = np.zeros((m, n))
         for i in range(m):
@@ -98,14 +59,12 @@ def wasserstein_distance(mu, nu, cost_matrix):
         raise Exception("Optimization problem did not converge!")
     
 def reduce_scenarios_wasserstein(scenarios, num_reduce, p=2):
-    """
-    Riduce il numero di scenari multivariati usando la distanza di Wasserstein.
-    """
+
     scenarios = np.array(scenarios)
     n = len(scenarios)
-    mu = np.ones(n) / n  # probabilità uniformi
+    mu = np.ones(n) / n  
 
-    # coppie generate da scenari random per clacolare delle distanze e ricavare una tolleranza    
+    # Couples generated from random scenarios to evaluate distances and set a tolerance  
     best_distance = 10000000
     best_subset = None
 
@@ -119,30 +78,4 @@ def reduce_scenarios_wasserstein(scenarios, num_reduce, p=2):
             best_subset = scenario_reduce
 
     return best_subset, best_distance, nu
-
-
-
-    """idx = np.random.permutation(100)
-    print('aaaaaa')
-    coppie = [(scenariosample[idx[i]], scenariosample[idx[i+1]]) for i in range(0,100,2)]
-    print('ciao')
-    distanze = np.array([wasserstein_distance(a,b) for a,b in coppie])
-    toll = np.quantile(distanze,0.1) 
-    print(toll)
-    combinations = list(itertools.combinations(range(n), num_reduce)) 
-    best_distance = float("inf")
-    best_subset = None
-    i=0
-    while best_distance > toll and i < len(combinations):
-        reduced = scenarios[list(combinations[i])]
-        nu = np.ones(num_reduce) / num_reduce
-        cost = compute_cost_matrix_multivariate(scenarios, reduced, p=p)
-        dist, plan = wasserstein_distance(mu, nu, cost)
-        if dist < best_distance:
-            best_distance = dist
-            best_subset = combinations[i]
-        print(best_distance)
-        i = i+1
-
-    return list(best_subset), scenarios[list(best_subset)], best_distance"""
     

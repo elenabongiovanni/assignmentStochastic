@@ -2,7 +2,6 @@ import gurobipy as gp
 from gurobipy import GRB
 from data import *
 
-
 def newsVendor(demand, prob, parameters):
 
     n_scenarios = len(demand)
@@ -10,14 +9,12 @@ def newsVendor(demand, prob, parameters):
     cost = parameters.get('cost')
     exp_val = 0
 
-    scenarios = demand
-
     # Model
     m = gp.Model("newsvendor")
     m.setParam('OutputFlag', 0)
 
-    n_neswpaper = m.addVar(vtype=GRB.INTEGER, lb=0, name="X") #number of bought newspaper
-    y = m.addVars(n_scenarios, vtype=GRB.INTEGER, lb=0, name="Y") #numeber of sold newspaper
+    n_neswpaper = m.addVar(vtype=GRB.INTEGER, lb=0, name="X") # Number of bought newspaper
+    y = m.addVars(n_scenarios, vtype=GRB.INTEGER, lb=0, name="Y") # Numeber of sold newspaper
 
     exp_val = sum(prob[i] * y[i] for i in range(n_scenarios)) 
     m.setObjective(
@@ -36,18 +33,17 @@ def newsVendor(demand, prob, parameters):
     # Solve
     m.optimize()
     ottimo = n_neswpaper.X
-    #print("Valore ottimo: ",ottimo)
 
     return ottimo, m.ObjVal
 
+# Function implemented to study the out-of-sample stability
 def compute_objective_NewsVendor(solution, demand, parameters):
-    """
-    Calcola il valore obiettivo (profitto) di una soluzione fissata nel problema del Newsvendor.
-    """
+
     selling_price = parameters.get('selling_price')
     cost = parameters.get('cost')
 
     sold = min(solution, demand)
+
     return selling_price * sold - cost * solution
 
 

@@ -13,55 +13,37 @@ def momentmatching(mu,sigma2,weight,scenarios):
 
     # Variables
     pi = model.addVars(len_scenarios, lb=0, ub=1, vtype=GRB.CONTINUOUS, name="prob")
-    
-    #u = model.addVar(lb = 0, name = "first abs")
-    #v = model.addVar(lb = 0, name = "second abs")
 
     # Constraint
     model.addConstr(gp.quicksum(pi[s] for s in range(len_scenarios)) == 1 , name = "somma prob")
 
-    d = scenarios.shape[1]  # numero dimensioni (es. 3 se scenario è [x, y, z])
+    d = scenarios.shape[1]  
 
     mu = np.array(mu).flatten()
     sigma2 = np.array(sigma2).flatten()
 
+    # Create a full vector with correct dimension starting from the mean
     if mu.size == 1:
-        mu = np.full(d, mu[0])  # copia la media su tutte le dimensioni
+        mu = np.full(d, mu[0]) 
 
     if np.isscalar(sigma2):
-        sigma2 = sigma2**2  # nel tuo caso devstd -> varianza
+        sigma2 = sigma2**2 
     sigma2 = np.array(sigma2).flatten()
+
+    # Create a full vector with correct dimension starting from the variance
     if sigma2.size == 1:
-        sigma2 = np.full(d, sigma2[0])  # copia la varianza su tutte le dimensioni
+        sigma2 = np.full(d, sigma2[0])  
 
-
-    #mean = gp.quicksum(pi[s] * scenarios[s][i] for i in range(scenarios.shape[1]) for s in range(len_scenarios) )
-    #var = gp.quicksum( pi[s]*(scenarios[s][i]-mu)**2 for i in range(scenarios.shape[1]) for s in range(len_scenarios))
-   
     mean_expr = [gp.quicksum(pi[s] * scenarios[s][j] for s in range(len_scenarios)) for j in range(d)]
     var_expr = [gp.quicksum(pi[s] * (scenarios[s][j] - mu[j])**2 for s in range(len_scenarios)) for j in range(d)]
 
     mean_diff = gp.quicksum((mean_expr[j] - mu[j])**2 for j in range(d))
     var_diff = gp.quicksum((var_expr[j] - sigma2[j])**2 for j in range(d))
-
-    #mean_diff = (mean - mu)**2
-    #var_diff = (var - sigma2)**2
-
-    #model.addConstr(u >= -sum(pi[s] * scenarios[s][i] for i in range(scenarios.shape[1])for s in range(len_scenarios))-mu)
-
-    #model.addConstr(v == sum(pi[s] *(scenarios[s][i]-mu)**2 for i in range(scenarios.shape[1]) for s in range(len_scenarios))-sigma2)
-    #model.addConstr(v >= -gp.quicksum(pi[s] *(scenarios[s][i]-mu)^2 for i in range(scenarios.shape[1]) for s in range(len_scenarios))-sigma2)
-    #model.addConstr(u == gp.abs_(u))
-    #model.addConstr(v == gp.abs_(v))
-
-    # Objective function
-    #model.setObjective(abs(gp.quicksum(pi[s] * scenarios[s] for s in range(len_scenarios))-mu)+\
-    #                    weight*abs(gp.quicksum(pi[s] *(scenarios[s]-mu)^2 for s in range(len_scenarios)))-sigma2, GRB.MINIMIZE)
     
     objective = mean_diff + (var_diff * float(weight))
     model.setObjective(objective, GRB.MINIMIZE)
 
-    # model.setObjective(mean_diff*mean_diff + var_diff*var_diff, GRB.MINIMIZE)
+    # Solver
     model.optimize()
 
     if model.status == GRB.OPTIMAL:
@@ -69,7 +51,6 @@ def momentmatching(mu,sigma2,weight,scenarios):
         for s in range(len_scenarios):
             prob[s] = pi[s].X
         momentmatching_distance = model.objVal
-        #print(momentmatching_distance)
         return momentmatching_distance, prob
     else:
         raise Exception("Optimization problem did not converge!")
@@ -80,7 +61,8 @@ def reduce_scenarios_momentmatching(scenarios, num_reduce,mu,sigma2,weight):
     n_item = scenarios.shape[1]
     scenarios = np.array(scenarios)
     n = len(scenarios)
-    # coppie generate da scenari random per clacolare delle distanze e ricavare una tolleranza    
+
+    # Couples generated from random scenarios to evaluate distances and set a tolerance  
     best_distance = np.inf
     best_subset = None
     subset = np.zeros((n_item,num_reduce))

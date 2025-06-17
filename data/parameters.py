@@ -20,7 +20,7 @@ parameters_ATO = {
 # NewsVendor Parameters
 
 parameters_NewsVendor = {
-    'cost' : 3,
+    'cost' : 6, 
     'selling_price' : 10,
 }
 

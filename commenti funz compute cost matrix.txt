@@ -1,0 +1,17 @@
+    """
+    Calcola la matrice dei costi tra punti multivariati usando la norma p.
+
+    Parameters:
+    -----------
+    points_mu : array-like, shape (m, d)
+        Scenari originali (m scenari, d dimensioni).
+    points_nu : array-like, shape (n, d)
+        Scenari ridotti (n scenari, d dimensioni).
+    p : int, optional
+        Norm p da usare (default = 2 → distanza euclidea).
+
+    Returns:
+    --------
+    cost_matrix : ndarray, shape (m, n)
+        Matrice dei costi: costo di trasportare massa da i a j.
+    """

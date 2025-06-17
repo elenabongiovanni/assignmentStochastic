@@ -2,7 +2,9 @@ import os
 import json
 
 def save_newsvendor_results(val_mc, quantity_mc, demand_mc, val_mm, quantity_mm, dist_mm, demand_mm, val_w, quantity_w, dist_w, demand_w, filename="NV_results.txt"):
+
     path = os.path.join("result", filename)
+
     with open(path, "w") as f:
         f.write("=== NEWSVENDOR RESULTS ===\n")
         
@@ -19,8 +21,8 @@ def save_newsvendor_results(val_mc, quantity_mc, demand_mc, val_mm, quantity_mm,
 
         diff_mm = abs(val_mm - val_mc)
         diff_w = abs(val_w - val_mc)
-        f.write(f"Difference MM - MC: {diff_mm:.4f}\n")
-        f.write(f"Difference Wasserstein - MC: {diff_w:.4f}\n")
+        f.write(f"Difference between MM - MC: {diff_mm:.4f}\n")
+        f.write(f"Difference between Wasserstein - MC: {diff_w:.4f}\n")
 
     print(f"NewsVendor results saved in {path}")
 
@@ -51,7 +53,7 @@ def save_newsvendor_results_stability(val_mc=None, val_mm=None, dist_mm=None, va
                                      filename_txt="NV_results.txt",
                                      filename_json="nv_results.json"):
     
-    # Salvataggio su file di testo (come prima)
+    # Save results on the txt file
     path_txt = os.path.join("result", filename_txt)
     with open(path_txt, "a") as f:
         f.write("\n=== NEWSVENDOR STABILITY ===\n")
@@ -63,11 +65,11 @@ def save_newsvendor_results_stability(val_mc=None, val_mm=None, dist_mm=None, va
     
     print(f"NewsVendor stability saved in {path_txt}")
 
-    # Salvataggio history in JSON, se presente
+    # Save results on the JSON file
     if history is not None:
         path_json = os.path.join("result", "nv_results_stability.json")
         with open(path_json, "w") as jf:
             json.dump(history, jf, indent=4)
-        print(f"NewsVendor stability history saved in {path_json}")
+        print(f"NewsVendor stability saved in {path_json}")
 
 

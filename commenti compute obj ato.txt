@@ -1,0 +1,7 @@
+"""
+    Valuta il valore della soluzione fissa `solution` (componenti ordinate)
+    su una nuova realizzazione di domanda `demand`.
+
+    solution: lista con quantità ordinate di ogni componente (x)
+    demand: array 2D [n_items x n_scenarios]
+    """

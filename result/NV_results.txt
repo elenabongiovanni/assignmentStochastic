@@ -1,19 +1,89 @@
 === NEWSVENDOR RESULTS ===
-Optimal value with full MC: 55.6500
-Optimal quantity (MC): 11.00
+Optimal value with full MC: 325.6000
+Optimal quantity (MC): 96.00
 
-Optimal value with Moment Matching: 57.9899
-Optimal quantity (Moment Matching): 11.00
+Optimal value with Moment Matching: 345.3328
+Optimal quantity (Moment Matching): 106.00
 Moment Matching distance: -0.0000
 
-Optimal value with Wasserstein: 55.8000
-Optimal quantity (Wasserstein): 11.00
-Wasserstein distance: 0.1891
+Optimal value with Wasserstein: 324.8000
+Optimal quantity (Wasserstein): 99.00
+Wasserstein distance: 1.4606
 
-Difference MM - MC: 2.3399
-Difference Wasserstein - MC: 0.1500
+Difference between MM - MC: 19.7328
+Difference between Wasserstein - MC: 0.8000
 
 === NEWSVENDOR STABILITY ===
-In-sample stability (min number of scenarios): 60
-Out-of-sample standard deviation: 2.4620
-Out-of-sample coefficient of variation: 0.0416
+In-sample stability (min number of scenarios): 30
+Out-of-sample standard deviation: 10.2538
+Out-of-sample coefficient of variation: 0.0321
+
+=== NEWSVENDOR STABILITY ===
+In-sample stability (min number of scenarios): 10
+Out-of-sample standard deviation: 8.9009
+Out-of-sample coefficient of variation: 0.0278
+
+=== NEWSVENDOR STABILITY ===
+In-sample stability (min number of scenarios): 40
+Out-of-sample standard deviation: 12.4330
+Out-of-sample coefficient of variation: 0.0387
+
+=== NEWSVENDOR STABILITY ===
+In-sample stability (min number of scenarios): 10
+Out-of-sample standard deviation: 8.9009
+Out-of-sample coefficient of variation: 0.0278
+
+=== NEWSVENDOR STABILITY ===
+In-sample stability (min number of scenarios): 10
+Out-of-sample standard deviation: 8.9009
+Out-of-sample coefficient of variation: 0.0278
+
+=== NEWSVENDOR STABILITY ===
+In-sample stability (min number of scenarios): 30
+Out-of-sample standard deviation: 10.2538
+Out-of-sample coefficient of variation: 0.0321
+
+=== NEWSVENDOR STABILITY ===
+In-sample stability (min number of scenarios): 40
+Out-of-sample standard deviation: 12.4330
+Out-of-sample coefficient of variation: 0.0387
+
+=== NEWSVENDOR STABILITY ===
+In-sample stability (min number of scenarios): 40
+Out-of-sample standard deviation: 12.4330
+Out-of-sample coefficient of variation: 0.0387
+
+=== NEWSVENDOR STABILITY ===
+In-sample stability (min number of scenarios): 10
+Out-of-sample standard deviation: 8.9009
+Out-of-sample coefficient of variation: 0.0278
+
+=== NEWSVENDOR STABILITY ===
+In-sample stability (min number of scenarios): 40
+Out-of-sample standard deviation: 12.4330
+Out-of-sample coefficient of variation: 0.0387
+
+=== NEWSVENDOR STABILITY ===
+In-sample stability (min number of scenarios): 30
+Out-of-sample standard deviation: 10.8842
+Out-of-sample coefficient of variation: 0.0351
+
+=== NEWSVENDOR STABILITY ===
+In-sample stability (min number of scenarios): 40
+Out-of-sample standard deviation: 12.4330
+Out-of-sample coefficient of variation: 0.0387
+
+=== NEWSVENDOR STABILITY ===
+In-sample stability (min number of scenarios): 20
+Out-of-sample standard deviation: 7.4914
+Out-of-sample coefficient of variation: 0.0232
+
+=== NEWSVENDOR STABILITY ===
+In-sample stability (min number of scenarios): 10
+Out-of-sample standard deviation: 9.9722
+Out-of-sample coefficient of variation: 0.0311
+
+=== NEWSVENDOR STABILITY ===
+In-sample stability (min number of scenarios): 40
+Out-of-sample standard deviation: 11.3357
+Out-of-sample coefficient of variation: 0.0364

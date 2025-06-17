@@ -15,8 +15,6 @@ def assembleToOrder(demand, prob, parameters):
     g = parameters.get('gozinto_factor')
     t = parameters.get('time_required')
 
-    scenarios = demand
-
     # Model
     m = gp.Model("assembleToOrder")
     m.setParam('OutputFlag', 0)
@@ -54,23 +52,16 @@ def assembleToOrder(demand, prob, parameters):
 
     return ottimo, m.ObjVal
 
-
+# Function implemented to study the out-of-sample stability
 def compute_objective_ATO(solution, demand, parameters):
-    """
-    Valuta il valore della soluzione fissa `solution` (componenti ordinate)
-    su una nuova realizzazione di domanda `demand`.
-
-    solution: lista con quantità ordinate di ogni componente (x)
-    demand: array 2D [n_items x n_scenarios]
-    """
-
+    
     n_components = parameters.get('n_components')
     n_items = parameters.get('n_items')
     selling_price = parameters.get('selling_prices')
-    #cost = parameters.get('costs')
-    g = parameters.get('gozinto_factor')  # matrice [n_components x n_items]
+    g = parameters.get('gozinto_factor') 
 
     m = gp.Model("evaluate_scenario_ATO")
+
     m.setParam('OutputFlag', 0)
     
     y = m.addVars(n_items, vtype=GRB.INTEGER, lb=0, name="Y")
@@ -78,16 +69,14 @@ def compute_objective_ATO(solution, demand, parameters):
     m.setObjective(gp.quicksum(selling_price[j] * y[j] for j in range(n_items)),
             GRB.MAXIMIZE)
     
-
-    # Vincoli:
+    # Constraints
     for j in range(n_items):
-        m.addConstr(y[j] <= demand[j])  # non si può vendere più della domanda
+        m.addConstr(y[j] <= demand[j])  # Demand satisfaction
 
     for i in range(n_components):
         m.addConstr(
-            gp.quicksum(g[i][j] * y[j] for j in range(n_items)) <= solution[i]  # non superare le componenti disponibili
+            gp.quicksum(g[i][j] * y[j] for j in range(n_items)) <= solution[i]  # Capacity items production
         )
 
-    # Risolvi
     m.optimize()
-    return m.ObjVal  # Profitto ottenuto in questo scenario
+    return m.ObjVal  # Profit obtained in a specific scenario

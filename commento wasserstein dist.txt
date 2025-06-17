@@ -1,0 +1,20 @@
+"""
+    Compute the 1-Wasserstein distance between two discrete distributions using Gurobi.
+
+    Parameters:
+    -----------
+    mu : array-like, shape (m,)
+        Probability distribution of the first set of points (source).
+    nu : array-like, shape (n,)
+        Probability distribution of the second set of points (target).
+    cost_matrix : array-like, shape (m, n)
+        The cost matrix where cost_matrix[i][j] is the cost of transporting mass from
+        point i in mu to point j in nu.
+    
+    Returns:
+    --------
+    wasserstein_distance : float
+        The computed Wasserstein distance between mu and nu.
+    transport_plan : array, shape (m, n)
+        The optimal transport plan.
+    """

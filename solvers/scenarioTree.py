@@ -125,7 +125,6 @@ class ScenarioTree(nx.DiGraph):
         else:
             plt.show()
 
-
     def _generate_one_time_step(self, n_scenarios, parent_node): 
         '''Given a parent node and the number of children to generate, it returns the 
         children with corresponding probabilities'''
@@ -135,29 +134,24 @@ class ScenarioTree(nx.DiGraph):
         )
         return prob, obs
     
-    """def euclideanDistance(self, id1, id2):
-        obs_node1 = self.nodes[id1]['obs']
-        # obs_node1 = np.array(self.nodes[id1]['obs']) nel caso in cui non fosse già un array
-        obs_node2 = self.nodes[id2]['obs']
-        return np.linalg.norm(obs_node1-obs_node2)"""
-    
+    # Function used to save scenarios generated
     def get_all_scenarios(self):
+
         all_scenarios = []
-        skipped_first = False  # Flag per saltare il primo scenario
+        skipped_first = False  # Flag to skip the first scenario
 
         for node in self.nodes():
             if 'obs' in self.nodes[node]:
                 if not skipped_first:
                     skipped_first = True
-                    continue  # Salta il primo scenario
-                #print(f"Scenario for node {node}: {self.nodes[node]['obs']}")
+                    continue  
                 all_scenarios.append(self.nodes[node]['obs']) 
 
-        # Verifica che tutti gli scenari abbiano la stessa lunghezza
+        # Check if all scenarios have the same length
         scenario_lengths = [len(scenario) for scenario in all_scenarios]
         
         if len(set(scenario_lengths)) > 1:
-            raise ValueError("Gli scenari hanno lunghezze diverse, non possono essere memorizzati in un array NumPy.")
+            raise ValueError("Scenario have different lengths, they can't be saved in an array NumPy.")
         
         return np.array(all_scenarios)
     
