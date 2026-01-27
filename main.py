@@ -13,7 +13,7 @@ from solvers import *
 from sklearn.cluster import AgglomerativeClustering
 from scipy.spatial.distance import cdist
 
-branching_factors = [100]  
+branching_factors = [10000]  
 
 ############################
 ######## NEWSVENDOR ########
@@ -41,11 +41,11 @@ ottimo_NV, val_NV = newsVendor(scenari_NewsVendor.reshape(-1), prob_Newsvendor, 
 
 num_reduce = 50
 
-sigma2 = scenario_setting_NewsVendor.get('devstd')
+sigma = scenario_setting_NewsVendor.get('devstd')
 mu = scenario_setting_NewsVendor.get('expectedValue')
 weight = 1
 
-NV_best_subset_MM, NV_best_distance_MM, NV_prob_MM = reduce_scenarios_momentmatching(scenari_NewsVendor, num_reduce,mu,sigma2,weight)
+NV_best_subset_MM, NV_best_distance_MM, NV_prob_MM = reduce_scenarios_momentmatching(scenari_NewsVendor, num_reduce,mu,sigma,weight)
 
 ottimo_NV_MM, val_NV_MM = newsVendor(NV_best_subset_MM[0], NV_prob_MM, parameters_newsvendor)
 
@@ -92,11 +92,11 @@ mu = scenario_setting_ATO['expectedValue']
 sigma = scenario_setting_ATO['devstd']
 d = scenari_ATO.shape[1]
 mu = np.full(d, mu[0])  
-sigma2 = np.full(d, sigma**2)  
+#sigma2 = np.full(d, sigma**2)  
 
 weight = 1
 
-ATO_best_subset_MM, ATO_best_distance_MM, ATO_prob_MM = reduce_scenarios_momentmatching(scenari_ATO, num_reduce,mu,sigma2,weight)
+ATO_best_subset_MM, ATO_best_distance_MM, ATO_prob_MM = reduce_scenarios_momentmatching(scenari_ATO, num_reduce,mu,sigma,weight)
 
 ottimo_ATO_MM, val_ATO_MM = assembleToOrder(ATO_best_subset_MM, ATO_prob_MM, parameters_ato)
 
