@@ -1,14 +1,19 @@
 === ATO RESULTS ===
-Optimal value with full MC: 2457.7970
+Optimal value with full MC: 2455.1410
 Produced quantities (Full MC): 115.00, 115.00, 46.00, 25.00, 49.00
 
-Optimal value with Moment Matching: 2457.7001
-Produced quantities (Moment Matching): 114.00, 114.00, 47.00, 23.00, 52.00
+Optimal value with Moment Matching: 2555.8138
+Produced quantities (Moment Matching): 115.00, 115.00, 46.00, 22.00, 52.00
 Moment Matching distance: -0.0000
 
-Optimal value with Wasserstein: 2492.6000
-Produced quantities (Wasserstein): 115.00, 115.00, 48.00, 23.00, 49.00
-Wasserstein distance: 3.3083
+Optimal value with Wasserstein: 2463.2000
+Produced quantities (Wasserstein): 115.00, 115.00, 47.00, 25.00, 48.00
+Wasserstein distance: 3.3219
 
-Difference between MM - MC: 0.0969
-Difference between Wasserstein - MC: 34.8030
+Difference between MM - MC: 100.6728
+Difference between Wasserstein - MC: 8.0590
+
+=== ATO STABILITY ===
+In-sample stability (min number of scenarios): 140
+Out-of-sample standard deviation: 7.4459
+Out-of-sample coefficient of variation: 0.0008

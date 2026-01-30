@@ -91,8 +91,7 @@ num_reduce = 50
 mu = scenario_setting_ATO['expectedValue']
 sigma = scenario_setting_ATO['devstd']
 d = scenari_ATO.shape[1]
-mu = np.full(d, mu[0])  
-#sigma2 = np.full(d, sigma**2)  
+mu = np.full(d, mu[0])    
 
 weight = 1
 

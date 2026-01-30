@@ -26,7 +26,7 @@ setting_NewsVendor = scenario_setting_NewsVendor
 
 #### In Sample Stability ####
 
-n_scenarios = 10
+n_scenarios = 100
 np.random.seed(1)
 
 n_scenarios_ATO, list_results_ATO = inSampleStability_ATO(n_scenarios, num_variables_ATO, setting_ATO, parameters_ATO, N=100, alpha=0.01, max_iter=100, tol = 10)

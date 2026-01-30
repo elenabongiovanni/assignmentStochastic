@@ -1,14 +1,19 @@
 === NEWSVENDOR RESULTS ===
-Optimal value with full MC: 320.3770
-Optimal quantity (MC): 94.00
+Optimal value with full MC: 321.8310
+Optimal quantity (MC): 95.00
 
-Optimal value with Moment Matching: 317.6483
-Optimal quantity (Moment Matching): 115.00
+Optimal value with Moment Matching: 308.4039
+Optimal quantity (Moment Matching): 90.00
 Moment Matching distance: -0.0000
 
-Optimal value with Wasserstein: 316.2000
+Optimal value with Wasserstein: 328.0000
 Optimal quantity (Wasserstein): 94.00
-Wasserstein distance: 2.3477
+Wasserstein distance: 2.2060
 
-Difference between MM - MC: 2.7287
-Difference between Wasserstein - MC: 4.1770
+Difference between MM - MC: 13.4271
+Difference between Wasserstein - MC: 6.1690
+
+=== NEWSVENDOR STABILITY ===
+In-sample stability (min number of scenarios): 130
+Out-of-sample standard deviation: 12.6499
+Out-of-sample coefficient of variation: 0.0388
